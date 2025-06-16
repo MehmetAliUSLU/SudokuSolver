@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class SudokuMap implements Runnable{
 
     private SudokuMap map = null;
-    private Cell[][] cells = new Cell[9][9];
+    private  Cell[][] cells = new Cell[9][9];
     private int target = 0;
 
     public SudokuMap(SudokuMap map, int target, Cell[][] cells) {
@@ -24,7 +24,7 @@ public class SudokuMap implements Runnable{
         
     }
 
-    public synchronized  void cellFiller() {
+    public synchronized void cellFiller() {
 
         if(target!=0){
             SudokuMap targetMap = new SudokuMap(this,target, this.cells);
@@ -84,7 +84,7 @@ public class SudokuMap implements Runnable{
         
     }
 
-    public Cell[][] getCells() {
+    public synchronized Cell[][] getCells() {
         return cells;
     }
 
@@ -159,6 +159,10 @@ public class SudokuMap implements Runnable{
         }
       
 
+    }
+
+    public synchronized void setCells(Cell[][] cells) {
+        this.cells = cells;
     }
 
     
