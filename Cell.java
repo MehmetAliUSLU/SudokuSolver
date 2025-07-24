@@ -86,24 +86,22 @@ public class Cell {
             }
 
             
-
+            boolean hasProgress = false;
             for (int i = 0; i < Solver.grid.length; i++) {
                 for (int j = 0; j < Solver.grid[i].length; j++) {
-                    //if ( Solver.grid[i][j].isEmpty() && Solver.grid[i][j].possibleValues.size() >1) {
-                    //    return Solver.grid[i][j].isThatOnlyOne();
-                    //}
 
                     if (Solver.grid[i][j].isEmpty() && Solver.grid[i][j].possibleValues.size() == 1) {
                         Solver.grid[i][j].setValue(Solver.grid[i][j].possibleValues.get(0));
                         Solver.grid[i][j].removefromPossibleValues(Solver.grid[i][j].possibleValues.get(0));
                         Solver.grid[i][j].possibleValues.clear();
                         Solver.grid[i][j].setIsEmpty(false);
-                        return true;
+                        hasProgress = true;
+                        continue;
                     }
                 }
             }
 
-            return false;
+            return hasProgress; // Return true if any possible values were calculated
         }
         return false; // No possible values calculated
     }

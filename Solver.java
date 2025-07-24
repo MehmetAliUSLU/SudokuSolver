@@ -28,6 +28,17 @@ public class Solver
         return true; // All cells are filled
     }
 
+    public void SolveWithIsThatOnlyOne() {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()) {
+                    grid[i][j].isThatOnlyOne();
+                }
+            }
+        }
+        Solve(0);
+    }
+
     public void Solve(int iterate){
         if(isSolved()) {
             System.out.println("Sudoku is already solved.");
@@ -39,10 +50,9 @@ public class Solver
         boolean progres = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                boolean progress = false;
-                progress= grid[i][j].calculatePossibleValues();
-                progres = progress;
-                
+                if (grid[i][j].isEmpty()) {
+                    progres = progres || grid[i][j].calculatePossibleValues();
+                }
             }
         }
 
@@ -51,24 +61,22 @@ public class Solver
         if (progres) {
             Solve(0);
         } else {
+            System.out.println("iterate: " + iterate);
             iterate++;
-            if(iterate==100 ){
-                
+            if (iterate == 10) {
+                SolveWithIsThatOnlyOne();
                 System.out.println("No further progress can be made with current logic.");
                 printGrid();
-
-                for(int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 9; j++) {
-                        if (grid[i][j].isEmpty()) {
-                            grid[i][j].printPossibleValues();
-                        }
+                for (Cell[] grid1 : grid) {
+                    for (Cell item : grid1) {
+                        if (item.isEmpty()) {
+                            item.printPossibleValues();
+                        } 
                     }
+                    System.out.println();
                 }
-            }else{
-            Solve(iterate);
-
             }
-        
+            Solve(iterate);
         }
     }
 
