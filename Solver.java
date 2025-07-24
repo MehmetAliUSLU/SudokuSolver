@@ -28,30 +28,48 @@ public class Solver
         return true; // All cells are filled
     }
 
-    public void Solve(){
+    public void Solve(int iterate){
         if(isSolved()) {
             System.out.println("Sudoku is already solved.");
             printGrid();
             return;
         }
 
+        
+        boolean progres = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                grid[i][j].calculatePossibleValues();
+                boolean progress = false;
+                progress= grid[i][j].calculatePossibleValues();
+                progres = progress;
+                
             }
         }
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty() && grid[i][j].possibleValues.size() == 1) {
+        
 
-                    grid[i][j].setValue(grid[i][j].possibleValues.get(0));
-                    grid[i][j].setIsEmpty(false);
+        if (progres) {
+            Solve(0);
+        } else {
+            iterate++;
+            if(iterate==100 ){
+                
+                System.out.println("No further progress can be made with current logic.");
+                printGrid();
 
+                for(int i = 0; i < 9; i++) {
+                    for (int j = 0; j < 9; j++) {
+                        if (grid[i][j].isEmpty()) {
+                            grid[i][j].printPossibleValues();
+                        }
+                    }
                 }
+            }else{
+            Solve(iterate);
+
             }
+        
         }
-        Solve();
     }
 
 
