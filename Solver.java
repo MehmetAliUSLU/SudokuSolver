@@ -29,14 +29,19 @@ public class Solver
     }
 
     public void SolveWithIsThatOnlyOne() {
+        boolean isProgress = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j].isEmpty()) {
-                    grid[i][j].isThatOnlyOne();
+                    System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
+                    isProgress = isProgress || grid[i][j].isThatOnlyOne();
+                    // Debug print removed for production use
                 }
             }
         }
-        Solve(0);
+        if (isProgress) {
+            Solve(0);
+        }
     }
 
     public void Solve(int iterate){
@@ -47,35 +52,44 @@ public class Solver
         }
 
         
-        boolean progres = false;
+        boolean progress = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j].isEmpty()) {
-                    progres = progres || grid[i][j].calculatePossibleValues();
+                    progress = progress || grid[i][j].calculatePossibleValues();
                 }
             }
         }
 
         
 
-        if (progres) {
+        if (progress) {
+            System.out.println(iterate + " iterations with progress.");
             Solve(0);
         } else {
-            System.out.println("iterate: " + iterate);
-            iterate++;
-            if (iterate == 10) {
+            if (iterate > 3 && iterate < 5) {
+                System.out.println(iterate + " iterations without progress, trying to solve with isThatOnlyOne.");
                 SolveWithIsThatOnlyOne();
+
+            }else if(iterate > 5) {
                 System.out.println("No further progress can be made with current logic.");
                 printGrid();
+                int solvedCount = 0;
                 for (Cell[] grid1 : grid) {
                     for (Cell item : grid1) {
                         if (item.isEmpty()) {
                             item.printPossibleValues();
-                        } 
+                        } else {
+                            solvedCount++;
+                        }
                     }
                     System.out.println();
                 }
+                System.out.println("Solved cells: " + solvedCount);
+                return;
             }
+
+            iterate++;
             Solve(iterate);
         }
     }

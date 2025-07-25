@@ -96,7 +96,6 @@ public class Cell {
                         Solver.grid[i][j].possibleValues.clear();
                         Solver.grid[i][j].setIsEmpty(false);
                         hasProgress = true;
-                        continue;
                     }
                 }
             }
@@ -109,36 +108,64 @@ public class Cell {
 
     public boolean isThatOnlyOne() {
 
-        if (this.isEmpty()&& this.possibleValues.size()>1) {
-            for (int k=0;k< this.possibleValues.size();k++) {
-                int possibleValue = this.possibleValues.get(k);
-                for(int i=0; i<9;i++){
-                    if(Solver.grid[i][column].possibleValues.contains(possibleValue)&& !Solver.grid[i][column].equals(this)) {
 
-                            return false;
-                        }
-                        if(Solver.grid[row][i].possibleValues.contains(possibleValue)&& !Solver.grid[row][i].equals(this)) {
-
-                            return false;
-                        }
-                    }   
-
-                    for (int i = 0; i < 3; i++) {
-                        for (int j = 0; j < 3; j++) {
-                            if (Solver.grid[row - row % 3 + i][column - column % 3 + j].possibleValues.contains(possibleValue)&& !Solver.grid[row - row % 3 + i][column - column % 3 + j].equals(this)) {
-                                return false;
-                            }
-                        }
-                    }
-                    this.setValue(possibleValue);
-                    this.removefromPossibleValues(possibleValue);
-                    this.possibleValues.clear();
-                    this.setIsEmpty(false);
-
+        
+        Cell[][] box = this.get3by3Box();
+        ArrayList<Integer> boxPossibleValues = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (box[i][j].isEmpty() && !box[i][j].equals(this)) {
+                    boxPossibleValues.addAll(box[i][j].possibleValues);
                 }
             }
-            return true; // Only one possible value found
         }
+
+        Cell[] rowCells = this.getRow();
+        Cell[] columnCells = this.getColumn();
+
+        ArrayList<Integer> rowPossibleValues = new ArrayList<>();
+        ArrayList<Integer> columnPossibleValues = new ArrayList<>();
+
+        for (Cell cell : rowCells) {
+            if (cell.isEmpty() && !cell.equals(this)) {
+                rowPossibleValues.addAll(cell.possibleValues);
+            }
+        }
+
+        for (Cell cell : columnCells) {
+            if (cell.isEmpty() && !cell.equals(this)) {
+                columnPossibleValues.addAll(cell.possibleValues);
+            }
+        }
+
+        for (int possibleValue : this.possibleValues) {
+            boolean isOnlyOneInColumn = true;
+            boolean isOnlyOneInRow = true;
+            boolean isOnlyOneIn3x3 = true;
+
+            if (boxPossibleValues.contains(possibleValue)) {
+                isOnlyOneIn3x3 = false;
+            }
+            if (rowPossibleValues.contains(possibleValue)) {
+                isOnlyOneInRow = false;
+            }
+            if (columnPossibleValues.contains(possibleValue)) {
+                isOnlyOneInColumn = false;
+            }
+
+            
+            // Debug print removed for production. Use logging if needed.
+            // System.out.println(isOnlyOneIn3x3 + " " + isOnlyOneInRow + " " + isOnlyOneInColumn + " for value: " + possibleValue);
+            if (isOnlyOneInColumn || isOnlyOneInRow || isOnlyOneIn3x3) {
+                this.setValue(possibleValue);
+                this.removefromPossibleValues(possibleValue);
+                this.possibleValues.clear();
+                this.setIsEmpty(false);
+                return true; // Found a unique possible value
+            }
+        }
+        return false; // No unique possible value found
+    }
     
 
 
@@ -193,4 +220,38 @@ public class Cell {
         System.out.println("Possible values for cell (" + row + ", " + column + "): " + possibleValues);
     }
 
+    public Cell[][] get3by3Box() {
+        
+        Cell[][] box = new Cell[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                box[i][j] = Solver.grid[row - row % 3 + i][column - column % 3 + j];
+            }
+        }
+        return box;
+
+    }
+    public Cell[] getRow() {
+        Cell[] rowCells = new Cell[9];
+        for (int i = 0; i < 9; i++) {
+            rowCells[i] = Solver.grid[row][i];
+        }
+        return rowCells;
+    }
+
+    public Cell[] getColumn() {
+        Cell[] columnCells = new Cell[9];
+        for (int i = 0; i < 9; i++) {
+            columnCells[i] = Solver.grid[i][column];
+        }
+        return columnCells;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Cell)) return false;
+        Cell other = (Cell) obj;
+        return this.row == other.row && this.column == other.column;
+    }
 }
