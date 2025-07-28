@@ -9,6 +9,7 @@ public class Cell {
     int column;
     ArrayList<Integer> possibleValues;
     Solver solver;
+    boolean isThatTryRandomly;
 
     public Cell(int value,int row, int column, Solver solver) {
         this.value = value;
@@ -21,6 +22,7 @@ public class Cell {
         this.possibleValues = new ArrayList<>();
         this.row = row;
         this.column = column;
+        this.isThatTryRandomly= false;
     }
 
     
@@ -28,10 +30,6 @@ public class Cell {
         return (this.row / 3 == otherCell.row / 3 && this.column / 3 == otherCell.column / 3);
         
     }
-
-
-
-
 
     public boolean  IsItVerticallyPlacedIn3x3Box() {
 
@@ -65,7 +63,6 @@ public class Cell {
         
     }
 
-
     public void VerticallyRemovePosibles(int value) {
 
         for (int i =0 ;i<9; i++) {
@@ -82,7 +79,6 @@ public class Cell {
         }
         
     }
-
 
     public boolean  IsItHorizontallyPlacedIn3x3Box() {
 
@@ -220,6 +216,15 @@ public class Cell {
         }
         return false;
     }
+    
+    public void updateCell(int value) {
+        
+        this.setValue(value);
+        this.removefromPossibleValues(value);
+        this.possibleValues.clear();
+        this.setIsEmpty(false);
+        
+    }
 
     public boolean isThatOnlyOne() {
 
@@ -313,7 +318,6 @@ public class Cell {
         
     }
    
-    
     public void setIsEmpty(boolean isEmpty) {
         this.isEmpty = isEmpty;
     }
@@ -361,4 +365,34 @@ public class Cell {
         Cell other = (Cell) obj;
         return this.row == other.row && this.column == other.column;
     }
+
+    public boolean TryRandomlySolve() {
+        
+        
+        ArrayList<Integer> possibleValuesCopy = new ArrayList<>(this.possibleValues);
+        Cell[][] temp = solver.CopyGrid();
+        Cell tempCell = this.Copy();
+        
+        for ( int value : possibleValuesCopy){
+            updateCell(value);
+            if(solver.Solve(0)){
+                return true;
+            }else{
+                solver.setGrid(temp);
+                solver.getGrid()[row][column].possibleValues.remove((Integer) value);
+                solver.getGrid()[row][column].isThatTryRandomly= true;
+                
+            }
+            
+        }
+        return false;
+    }
+
+    public Cell Copy(){
+        Cell copy =new Cell(0, this.row,  this.column, this.solver);
+        copy.isEmpty= true;
+        copy.possibleValues = this.possibleValues;
+        return copy;
+    }
+
 }

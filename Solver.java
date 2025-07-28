@@ -2,6 +2,10 @@ public class Solver
 {
 
     public Cell[][] grid;
+    
+    public void setCell(int row, int column,Cell cell) {
+        grid[row][column]= cell;
+    }
 
     public void setGrid(Cell[][] grid) {
         this.grid = grid;
@@ -16,18 +20,16 @@ public class Solver
         
     }
 
-    public Solver CopySolver() {
+    public Cell[][] CopyGrid() {
         Cell[][] newGrid = new Cell[grid.length][];
-        Solver solver = new Solver();
         for (int i = 0; i < grid.length; i++) {
             newGrid[i] = new Cell[grid[i].length];
             for (int j = 0; j < grid[i].length; j++) {
-                newGrid[i][j] = new Cell(grid[i][j].getValue(), i, j, solver);
+                newGrid[i][j] = new Cell(grid[i][j].getValue(), i, j, this);
             }
             
         }
-        solver.setGrid(newGrid);
-        return solver;
+        return newGrid;
     }
 
     public void printGrid() {
@@ -49,7 +51,6 @@ public class Solver
         }
         return true; // All cells are filled
     }
-
 
     public boolean  SolveWithVer() {
         
@@ -97,7 +98,7 @@ public class Solver
         
     }       
 
-    public void SolveWithIsThatOnlyOne() {
+    public boolean  SolveWithIsThatOnlyOne() {
         boolean isProgress = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -111,6 +112,7 @@ public class Solver
         if (isProgress) {
             Solve(0);
         }
+        return isProgress;
     }
 
     public boolean  Solve(){
@@ -166,8 +168,12 @@ public class Solver
             }else if (iterate>10&&iterate< 15) {
                 //System.out.println(iterate + " trying horizantally");
                 SolveWithHor();
-            } else if (iterate > 15) {
+            } else if (iterate > 15 && iterate<20) {
+                System.out.println("iterate: " + iterate);
+                SolveWithRandomly();
+            }else if (iterate>20) {
                 return false;
+                
             }
 
             iterate++;
@@ -175,5 +181,21 @@ public class Solver
         }
     }
 
+    public boolean SolveWithRandomly() {
 
+       boolean isProgress = false;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()&&!grid[i][j].isThatTryRandomly) {
+                    //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
+                    isProgress = isProgress || grid[i][j].TryRandomlySolve();
+                    // Debug print removed for production use
+                }
+            }
+        }
+        if (isProgress) {
+            return Solve(0);
+        }
+        return isProgress;
+    }
 }

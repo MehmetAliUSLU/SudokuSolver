@@ -14,6 +14,7 @@ public class Main {
         //    PrintStream fos = new PrintStream(logfile);
         //    
         //    System.setOut(fos);
+        //    System.setErr(fos);
         //} catch (Exception e) {
         //    // TODO: handle exception
         //}
@@ -22,7 +23,7 @@ public class Main {
         System.out.println("------------------------New Main-----------------------------");
 
         Solver solver = new Solver();
-        File file = new File("map.txt");
+        File file = new File("map3.txt");
         Cell[][] grid = new Cell[9][9];
         try {
             Scanner scanner = new Scanner(file);
