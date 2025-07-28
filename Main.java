@@ -20,10 +20,8 @@ public class Main {
         //}
 
 
-        System.out.println("------------------------New Main-----------------------------");
-
         Solver solver = new Solver();
-        File file = new File("map3.txt");
+        File file = new File("map4.txt");
         Cell[][] grid = new Cell[9][9];
         try {
             Scanner scanner = new Scanner(file);
@@ -40,7 +38,11 @@ public class Main {
         }
 
         solver.setGrid(grid);
-        System.out.println(solver.Solve());
+        try {
+            System.out.println(solver.Solve());
+        } catch (StackOverflowError e) {
+            solver.printGrid();
+        }
 
     }
 }

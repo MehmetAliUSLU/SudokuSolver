@@ -39,6 +39,20 @@ public class Solver
             }
             System.out.println();
         }
+        int solvedCount = 0;
+        for (Cell[] grid1 : grid) {
+            for (Cell item : grid1) {
+                if (item.isEmpty()) {
+                    item.printPossibleValues();
+                    System.out.println();
+
+                } else {
+                    solvedCount++;
+                }
+            }
+        }
+        System.out.println("Solved cells: " + solvedCount);
+        
     }
 
     public boolean isSolved() {
@@ -115,23 +129,28 @@ public class Solver
         return isProgress;
     }
 
+    public boolean  SolveWithCalculatePossibleValues() {
+        boolean isProgress = false;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()) {
+                    //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
+                    isProgress = isProgress || grid[i][j].calculatePossibleValues();
+                    // Debug print removed for production use
+                }
+            }
+        }
+        if (isProgress) {
+            Solve(0);
+        }
+        return isProgress;
+    }
+
     public boolean  Solve(){
         boolean isSolved = Solve(0);
 
         printGrid();
-        int solvedCount = 0;
-        for (Cell[] grid1 : grid) {
-            for (Cell item : grid1) {
-                if (item.isEmpty()) {
-                    item.printPossibleValues();
-                    System.out.println();
-
-                } else {
-                    solvedCount++;
-                }
-            }
-        }
-        System.out.println("Solved cells: " + solvedCount);
+        
         return isSolved;
     }
 
@@ -143,13 +162,9 @@ public class Solver
 
         
         boolean progress = false;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty()) {
-                    progress = progress || grid[i][j].calculatePossibleValues();
-                }
-            }
-        }
+       
+        progress = progress || SolveWithCalculatePossibleValues();
+    
 
         
 
@@ -159,40 +174,60 @@ public class Solver
         } else {
             if (iterate > 3 && iterate < 5) {
                 //System.out.println(iterate + " iterations without progress, trying to solve with isThatOnlyOne.");
-                SolveWithIsThatOnlyOne();
+                progress = progress ||  SolveWithIsThatOnlyOne();
 
             } else if (iterate >5 && iterate < 10) {
                 //System.out.println(iterate + " iterations without progress, trying to solve with vertically");
-                SolveWithVer();
+                progress = progress ||  SolveWithVer();
 
             }else if (iterate>10&&iterate< 15) {
                 //System.out.println(iterate + " trying horizantally");
-                SolveWithHor();
+                progress = progress ||  SolveWithHor();
             } else if (iterate > 15 && iterate<20) {
-                System.out.println("iterate: " + iterate);
-                SolveWithRandomly();
+                //System.out.println("iterate: " + iterate);
+                progress = progress ||  SolveWithRandomly();
             }else if (iterate>20) {
                 return false;
                 
             }
 
-            iterate++;
+            if (progress){
+                Solve(0);
+            }
+            iterate ++;
             return Solve(iterate);
         }
     }
 
-    public boolean SolveWithRandomly() {
+    public boolean  isAllLookedForRandomSolution() {
+        
+        for( int i = 0; i<9;i++){
+            for ( int j=0;j<9;j++){
+                if(!grid[i][j].isThatTryRandomly){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-       boolean isProgress = false;
+    public boolean SolveWithRandomly() {
+        
+        if ( isAllLookedForRandomSolution()){
+            return false; 
+        }
+        boolean isProgress = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j].isEmpty()&&!grid[i][j].isThatTryRandomly) {
                     //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
                     isProgress = isProgress || grid[i][j].TryRandomlySolve();
                     // Debug print removed for production use
+                    
                 }
             }
         }
+        
         if (isProgress) {
             return Solve(0);
         }
