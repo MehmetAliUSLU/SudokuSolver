@@ -8,6 +8,20 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //File logfile = new File("log.txt");
+        //try {
+        //    
+        //    PrintStream fos = new PrintStream(logfile);
+        //    
+        //    System.setOut(fos);
+        //} catch (Exception e) {
+        //    // TODO: handle exception
+        //}
+
+
+        System.out.println("------------------------New Main-----------------------------");
+
+        Solver solver = new Solver();
         File file = new File("map.txt");
         Cell[][] grid = new Cell[9][9];
         try {
@@ -16,7 +30,7 @@ public class Main {
                 String line = scanner.nextLine();
                 for (int j = 0; j < 9; j++) {
                     int value = Character.getNumericValue(line.charAt(j));
-                    grid[i][j] = new Cell(value, i, j);
+                    grid[i][j] = new Cell(value, i, j, solver);
                 }
             }
             scanner.close();
@@ -24,9 +38,8 @@ public class Main {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        Solver solver = new Solver(grid);
-
-        solver.Solve(0);
+        solver.setGrid(grid);
+        System.out.println(solver.Solve());
 
     }
 }
