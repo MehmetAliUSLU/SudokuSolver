@@ -21,7 +21,7 @@ public class Main {
 
 
         Solver solver = new Solver();
-        File file = new File("map4.txt");
+        File file = new File("map7.txt");
         Cell[][] grid = new Cell[9][9];
         try {
             Scanner scanner = new Scanner(file);
