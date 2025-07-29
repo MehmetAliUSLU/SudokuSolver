@@ -163,40 +163,39 @@ public class Solver
         
         boolean progress = false;
        
-        progress = progress || SolveWithCalculatePossibleValues();
-    
+        if(iterate<20){
 
-        
-
-        if (progress) {
-            //System.out.println(iterate + " iterations with progress.");
-            return Solve(0);
-        } else {
-            if (iterate > 3 && iterate < 5) {
-                //System.out.println(iterate + " iterations without progress, trying to solve with isThatOnlyOne.");
-                progress = progress ||  SolveWithIsThatOnlyOne();
-
-            } else if (iterate >5 && iterate < 10) {
-                //System.out.println(iterate + " iterations without progress, trying to solve with vertically");
-                progress = progress ||  SolveWithVer();
-
-            }else if (iterate>10&&iterate< 15) {
-                //System.out.println(iterate + " trying horizantally");
-                progress = progress ||  SolveWithHor();
-            } else if (iterate > 15 && iterate<20) {
-                //System.out.println("iterate: " + iterate);
-                progress = progress ||  SolveWithRandomly();
-            }else if (iterate>20) {
-                return false;
-                
-            }
-
-            if (progress){
-                Solve(0);
-            }
-            iterate ++;
-            return Solve(iterate);
+            progress = SolveWithCalculatePossibleValues()||SolveWithIsThatOnlyOne()||SolveWithVer()||SolveWithHor() ;
         }
+
+        //if (iterate<= 3){
+        //    progress = progress || SolveWithCalculatePossibleValues();
+//
+        //}else if (iterate > 3 && iterate < 5) {
+        //    //System.out.println(iterate + " iterations without progress, trying to solve with isThatOnlyOne.");
+        //    progress = progress ||  SolveWithIsThatOnlyOne();
+//
+        //} else if (iterate >5 && iterate < 10) {
+        //    //System.out.println(iterate + " iterations without progress, trying to solve with vertically");
+        //    progress = progress ||  SolveWithVer();
+//
+        //}else if (iterate>10&&iterate< 15) {
+        //    //System.out.println(iterate + " trying horizantally");
+        //    progress = progress ||  SolveWithHor();
+        //} else if (iterate > 15 && iterate<20) {
+        //    //System.out.println("iterate: " + iterate);
+        //    //progress = progress ||  SolveWithRandomly();
+        //}else if (iterate>20) {
+        //    return false;
+        //    
+        //}
+
+        if (progress){
+            Solve(0);
+        }
+        iterate ++;
+        return Solve(iterate);
+        
     }
 
     public boolean  isAllLookedForRandomSolution() {

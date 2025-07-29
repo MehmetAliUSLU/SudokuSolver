@@ -132,7 +132,7 @@ public class Cell {
         // Logic to calculate possible values based on Sudoku rules
         // This is a placeholder for the actual logic
 
-        if (isEmpty) {
+        if (isEmpty && possibleValues.size()==0) {
             // Check the row and column for existing values
             for (int i = 1; i <= 9; i++) {
                 // Check if the value i can be placed in this cell
@@ -149,7 +149,7 @@ public class Cell {
                     }
                 }
             }
-
+        }else if(isEmpty){
             if (this.possibleValues.size() == 2) {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
@@ -189,6 +189,61 @@ public class Cell {
                 }
             }
 
+            if(possibleValues.size()==3){
+                
+                ArrayList<Cell> cellList3box= new ArrayList<>();
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (solver.getGrid()[row - row % 3 + i][column - column % 3 + j].getValue() == 0 && !solver.getGrid()[row - row % 3 + i][column - column % 3 + j].equals(this) && solver.getGrid()[row - row % 3 + i][column - column % 3 + j].isPossiblesOkFor3(this.possibleValues)) {
+                            cellList3box.add(solver.getGrid()[row - row % 3 + i][column - column % 3 + j]);
+                        
+                        }
+                    }
+                }
+                if ( cellList3box.size()==2){
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            if (solver.getGrid()[row - row % 3 + i][column - column % 3 + j].getValue() == 0 && !solver.getGrid()[row - row % 3 + i][column - column % 3 + j].equals(this) && !solver.getGrid()[row - row % 3 + i][column - column % 3 + j].equals(cellList3box.get(0))&& !solver.getGrid()[row - row % 3 + i][column - column % 3 + j].equals(cellList3box.get(1))) {
+                                solver.getGrid()[row - row % 3 + i][column - column % 3 + j].possibleValues.remove(possibleValues.get(0));
+                                solver.getGrid()[row - row % 3 + i][column - column % 3 + j].possibleValues.remove(possibleValues.get(1));
+                                solver.getGrid()[row - row % 3 + i][column - column % 3 + j].possibleValues.remove(possibleValues.get(2));
+                        
+                            }
+                        }
+                    }
+                }
+                ArrayList<Cell> rowCells=new ArrayList<>();
+                for(int i =0; i<9; i++){
+                    if(solver.getGrid()[row][i].getValue() == 0 && !solver.getGrid()[row][i].equals(this) && solver.getGrid()[row][i].isPossiblesOkFor3(this.possibleValues)) {
+                        rowCells.add(solver.getGrid()[row][i]);
+                    }
+                }
+                if(rowCells.size() == 2){
+                    for(int i =0; i<9; i++){
+                        if(solver.getGrid()[row][i].getValue() == 0 && !solver.getGrid()[row][i].equals(this) && !solver.getGrid()[row][i].equals(rowCells.get(0))&& !solver.getGrid()[row][i].equals(rowCells.get(1))) {
+                            solver.getGrid()[row][i].possibleValues.remove(possibleValues.get(0));
+                            solver.getGrid()[row][i].possibleValues.remove(possibleValues.get(1));
+                            solver.getGrid()[row][i].possibleValues.remove(possibleValues.get(2));
+                        }
+                    }
+                }
+                ArrayList<Cell> columnCells=new ArrayList<>();
+                for(int i =0; i<9; i++){
+                    if(solver.getGrid()[i][column].getValue() == 0 && !solver.getGrid()[i][column].equals(this) && solver.getGrid()[i][column].isPossiblesOkFor3(this.possibleValues)) {
+                        columnCells.add(solver.getGrid()[i][column]);
+                    }
+                }
+                if(columnCells.size() == 2){
+                    for(int i =0; i<9; i++){
+                        if(solver.getGrid()[i][column].getValue() == 0 && !solver.getGrid()[i][column].equals(this) && !solver.getGrid()[i][column].equals(columnCells.get(0))&& !solver.getGrid()[i][column].equals(columnCells.get(1))) {
+                            solver.getGrid()[i][column].possibleValues.remove(possibleValues.get(0));
+                            solver.getGrid()[i][column].possibleValues.remove(possibleValues.get(1));
+                            solver.getGrid()[i][column].possibleValues.remove(possibleValues.get(2));
+                        }
+                    }
+                }
+            }
+
             
             boolean hasProgress = false;
             for (int i = 0; i < solver.getGrid().length; i++) {
@@ -204,6 +259,18 @@ public class Cell {
             return hasProgress; // Return true if any possible values were calculated
         }
         return false; // No possible values calculated
+    }
+
+
+    public boolean  isPossiblesOkFor3(ArrayList<Integer> list) {
+        ArrayList<Integer> possibles= new ArrayList<>(possibleValues);
+        for(Integer value : possibles){
+            if(!list.contains(value)){
+                return false;
+            }
+        }
+        return true;
+
     }
 
     public boolean updateCell() {
