@@ -1,5 +1,6 @@
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 
@@ -8,20 +9,20 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //File logfile = new File("log.txt");
-        //try {
-        //    
-        //    PrintStream fos = new PrintStream(logfile);
-        //    
-        //    System.setOut(fos);
-        //    System.setErr(fos);
-        //} catch (Exception e) {
-        //    // TODO: handle exception
-        //}
+        File logfile = new File("log.txt");
+        try {
+            
+            PrintStream fos = new PrintStream(logfile);
+            
+            System.setOut(fos);
+            System.setErr(fos);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
 
         Solver solver = new Solver();
-        File file = new File("map7.txt");
+        File file = new File("maps/map3.txt");
         Cell[][] grid = new Cell[9][9];
         try {
             Scanner scanner = new Scanner(file);

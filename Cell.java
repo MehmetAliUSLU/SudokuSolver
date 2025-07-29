@@ -25,7 +25,6 @@ public class Cell {
         this.isThatTryRandomly= false;
     }
 
-    
     public boolean  IsItWithSameBox(Cell otherCell) {
         return (this.row / 3 == otherCell.row / 3 && this.column / 3 == otherCell.column / 3);
         
@@ -261,7 +260,6 @@ public class Cell {
         return false; // No possible values calculated
     }
 
-
     public boolean  isPossiblesOkFor3(ArrayList<Integer> list) {
         ArrayList<Integer> possibles= new ArrayList<>(possibleValues);
         for(Integer value : possibles){
@@ -279,6 +277,11 @@ public class Cell {
             this.removefromPossibleValues(this.possibleValues.get(0));
             this.possibleValues.clear();
             this.setIsEmpty(false);
+            //solver.printGrid();
+            //try {
+            //    Thread.sleep(1000);
+            //} catch (InterruptedException ex) {
+            //}
             return true;
         }
         return false;
@@ -290,6 +293,12 @@ public class Cell {
         this.removefromPossibleValues(value);
         this.possibleValues.clear();
         this.setIsEmpty(false);
+        //System.out.println("Solving trying with randomly trying");
+        //solver.printGrid();
+        //try{
+        //    Thread.sleep(1000);
+        //}catch(Exception e){
+        //}
         
     }
 
@@ -346,6 +355,11 @@ public class Cell {
                 this.removefromPossibleValues(possibleValue);
                 this.possibleValues.clear();
                 this.setIsEmpty(false);
+                //solver.printGrid();
+                //try {
+                //    Thread.sleep(1000);
+                //} catch (Exception e) {
+                //}
                 return true; // Found a unique possible value
             }
         }
@@ -448,6 +462,7 @@ public class Cell {
                 solver.setGrid(temp);
                 solver.getGrid()[row][column].possibleValues.remove((Integer) value);
                 solver.getGrid()[row][column].isThatTryRandomly= true;
+                System.out.println("This iteration is not good for solution all return");
                 
             }
             

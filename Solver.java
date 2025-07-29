@@ -43,8 +43,8 @@ public class Solver
         for (Cell[] grid1 : grid) {
             for (Cell item : grid1) {
                 if (item.isEmpty()) {
-                    item.printPossibleValues();
-                    System.out.println();
+                    //item.printPossibleValues();
+                    //System.out.println();
 
                 } else {
                     solvedCount++;
@@ -52,6 +52,7 @@ public class Solver
             }
         }
         System.out.println("Solved cells: " + solvedCount);
+        System.out.println();
         
     }
 
