@@ -10,6 +10,7 @@ public class Cell {
     ArrayList<Integer> possibleValues;
     Solver solver;
     boolean isThatTryRandomly;
+    static int triedrandomlycount; 
 
     public Cell(int value,int row, int column, Solver solver) {
         this.value = value;
@@ -448,13 +449,17 @@ public class Cell {
     }
 
     public boolean TryRandomlySolve() {
-        
+        triedrandomlycount++;
+        if(solver.isAllLookedForRandomSolution()||triedrandomlycount>5){
+            return false;
+        }
         
         ArrayList<Integer> possibleValuesCopy = new ArrayList<>(this.possibleValues);
-        Cell[][] temp = solver.CopyGrid();
         Cell tempCell = this.Copy();
         
         for ( int value : possibleValuesCopy){
+            
+            Cell[][] temp = solver.CopyGrid();
             updateCell(value);
             if(solver.Solve(0)){
                 return true;

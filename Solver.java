@@ -43,8 +43,8 @@ public class Solver
         for (Cell[] grid1 : grid) {
             for (Cell item : grid1) {
                 if (item.isEmpty()) {
-                    //item.printPossibleValues();
-                    //System.out.println();
+                    item.printPossibleValues();
+                    System.out.println();
 
                 } else {
                     solvedCount++;
@@ -165,8 +165,12 @@ public class Solver
         boolean progress = false;
        
         if(iterate<20){
-
-            progress = SolveWithCalculatePossibleValues()||SolveWithIsThatOnlyOne()||SolveWithVer()||SolveWithHor() ;
+            progress = SolveWithCalculatePossibleValues()||progress ;
+            progress = SolveWithIsThatOnlyOne()||progress ;
+            progress = SolveWithVer()||progress ;
+            progress = SolveWithHor()||progress ;
+            progress = SolveWithRandomly()|| progress ;
+        
         }
 
         //if (iterate<= 3){
@@ -203,7 +207,7 @@ public class Solver
         
         for( int i = 0; i<9;i++){
             for ( int j=0;j<9;j++){
-                if(!grid[i][j].isThatTryRandomly){
+                if(!grid[i][j].isThatTryRandomly&& grid[i][j].isEmpty){
                     return false;
                 }
             }
@@ -231,6 +235,6 @@ public class Solver
         if (isProgress) {
             return Solve(0);
         }
-        return isProgress;
+        return false;
     }
 }
