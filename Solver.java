@@ -243,6 +243,7 @@ public class Solver
                         grid = tempGrid;
                         grid[i][j].isThatTryRandomly = true;
                         grid[i][j].triedrandomlycount++;
+                        //System.out.println("there is no solution for this iteration");
                         
                         
                     }

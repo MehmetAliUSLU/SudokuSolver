@@ -278,9 +278,9 @@ public class Cell {
             this.removefromPossibleValues(this.possibleValues.get(0));
             this.possibleValues.clear();
             this.setIsEmpty(false);
-            solver.printGrid();
+            //solver.printGrid();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(0);
             } catch (InterruptedException ex) {
             }
             return true;
@@ -294,10 +294,10 @@ public class Cell {
         this.removefromPossibleValues(value);
         this.possibleValues.clear();
         this.setIsEmpty(false);
-        System.out.println("Solving trying with randomly trying");
-        solver.printGrid();
+        //System.out.println("Solving trying with randomly trying");
+        //solver.printGrid();
         try{
-            Thread.sleep(1000);
+            Thread.sleep(0);
         }catch(Exception e){
         }
         
@@ -356,9 +356,9 @@ public class Cell {
                 this.removefromPossibleValues(possibleValue);
                 this.possibleValues.clear();
                 this.setIsEmpty(false);
-                solver.printGrid();
+                //solver.printGrid();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(0);
                 } catch (Exception e) {
                 }
                 return true; // Found a unique possible value
