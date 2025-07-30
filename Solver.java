@@ -1,3 +1,5 @@
+
+
 public class Solver
 {
 
@@ -43,9 +45,9 @@ public class Solver
         for (Cell[] grid1 : grid) {
             for (Cell item : grid1) {
                 if (item.isEmpty()) {
-                    item.printPossibleValues();
-                    System.out.println();
-
+                    //item.printPossibleValues();
+                    //System.out.println();
+                
                 } else {
                     solvedCount++;
                 }
@@ -169,7 +171,14 @@ public class Solver
             progress = SolveWithIsThatOnlyOne()||progress ;
             progress = SolveWithVer()||progress ;
             progress = SolveWithHor()||progress ;
-            progress = SolveWithRandomly()|| progress ;
+            Cell[][] celltemp = CopyGrid();
+            try {    
+                progress = SolveWithRandomly()|| progress ;
+            } catch (StackOverflowError e) {
+                grid = celltemp;
+            }
+
+
         
         }
 
@@ -196,7 +205,7 @@ public class Solver
         //}
 
         if (progress){
-            Solve(0);
+            return Solve(0);
         }
         iterate ++;
         return Solve(iterate);
@@ -223,9 +232,21 @@ public class Solver
         boolean isProgress = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty()&&!grid[i][j].isThatTryRandomly) {
+                if (grid[i][j].isEmpty()&&!grid[i][j].isThatTryRandomly &&grid[i][j].triedrandomlycount<5) {
                     //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
-                    isProgress = isProgress || grid[i][j].TryRandomlySolve();
+                    Cell[][] tempGrid = CopyGrid();
+                    try {
+                        isProgress = isProgress || grid[i][j].TryRandomlySolve();
+                        
+                    } catch (StackOverflowError e) {
+                        isProgress = isProgress||false;
+                        grid = tempGrid;
+                        grid[i][j].isThatTryRandomly = true;
+                        grid[i][j].triedrandomlycount++;
+                        
+                        
+                    }
+                    
                     // Debug print removed for production use
                     
                 }

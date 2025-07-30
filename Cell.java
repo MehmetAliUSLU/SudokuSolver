@@ -278,11 +278,11 @@ public class Cell {
             this.removefromPossibleValues(this.possibleValues.get(0));
             this.possibleValues.clear();
             this.setIsEmpty(false);
-            //solver.printGrid();
-            //try {
-            //    Thread.sleep(1000);
-            //} catch (InterruptedException ex) {
-            //}
+            solver.printGrid();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
             return true;
         }
         return false;
@@ -294,12 +294,12 @@ public class Cell {
         this.removefromPossibleValues(value);
         this.possibleValues.clear();
         this.setIsEmpty(false);
-        //System.out.println("Solving trying with randomly trying");
-        //solver.printGrid();
-        //try{
-        //    Thread.sleep(1000);
-        //}catch(Exception e){
-        //}
+        System.out.println("Solving trying with randomly trying");
+        solver.printGrid();
+        try{
+            Thread.sleep(1000);
+        }catch(Exception e){
+        }
         
     }
 
@@ -356,11 +356,11 @@ public class Cell {
                 this.removefromPossibleValues(possibleValue);
                 this.possibleValues.clear();
                 this.setIsEmpty(false);
-                //solver.printGrid();
-                //try {
-                //    Thread.sleep(1000);
-                //} catch (Exception e) {
-                //}
+                solver.printGrid();
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                }
                 return true; // Found a unique possible value
             }
         }
@@ -449,16 +449,10 @@ public class Cell {
     }
 
     public boolean TryRandomlySolve() {
-        triedrandomlycount++;
-        if(solver.isAllLookedForRandomSolution()||triedrandomlycount>5){
-            return false;
-        }
-        
         ArrayList<Integer> possibleValuesCopy = new ArrayList<>(this.possibleValues);
         Cell tempCell = this.Copy();
         
         for ( int value : possibleValuesCopy){
-            
             Cell[][] temp = solver.CopyGrid();
             updateCell(value);
             if(solver.Solve(0)){
@@ -467,7 +461,6 @@ public class Cell {
                 solver.setGrid(temp);
                 solver.getGrid()[row][column].possibleValues.remove((Integer) value);
                 solver.getGrid()[row][column].isThatTryRandomly= true;
-                System.out.println("This iteration is not good for solution all return");
                 
             }
             
