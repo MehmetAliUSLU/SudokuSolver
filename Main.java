@@ -22,7 +22,7 @@ public class Main {
 
 
         Solver solver = new Solver();
-        File file = new File("maps/map8.txt");
+        File file = new File("maps/map9.txt");
         Cell[][] grid = new Cell[9][9];
         try {
             Scanner scanner = new Scanner(file);
