@@ -9,21 +9,33 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File logfile = new File("log.txt");
+        RedirectOutput("log.txt");
+        Solver solver = new Solver();
+        solver.setGrid(ReadMapFromFile("maps/map8.txt", solver));
         try {
-            
+            solver.Solve();
+        } catch (StackOverflowError e) {
+            solver.printGrid();
+        }
+    }
+
+    public static void RedirectOutput(String path) {
+        File logfile = new File(path);
+        try {
             PrintStream fos = new PrintStream(logfile);
-            
             System.setOut(fos);
             System.setErr(fos);
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println("Çıktı dosyası ayarlanırken problem oluştu.");
+            return;
         }
 
+    }
 
-        Solver solver = new Solver();
-        File file = new File("maps/map9.txt");
-        Cell[][] grid = new Cell[9][9];
+    public static Cell[][] ReadMapFromFile(String path, Solver solver) {
+
+        File file = new File(path);
+        Cell[][] grid = new Cell[9][9]; 
         try {
             Scanner scanner = new Scanner(file);
             for (int i = 0; i < 9; i++) {
@@ -35,14 +47,10 @@ public class Main {
             }
             scanner.close();
         } catch (Exception e) {
-            System.out.println("Error reading the file: " + e.getMessage());
+            System.out.println("Dosya okunurken hata oluştu.");
         }
+        
+        return grid;
 
-        solver.setGrid(grid);
-        try {
-            System.out.println(solver.Solve());
-        } catch (StackOverflowError e) {
-            solver.printGrid();
-        }
     }
 }

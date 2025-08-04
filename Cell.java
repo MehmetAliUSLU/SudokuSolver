@@ -10,7 +10,7 @@ public class Cell {
     ArrayList<Integer> possibleValues;
     Solver solver;
     boolean isThatTryRandomly;
-    static int triedrandomlycount; 
+    public int triedrandomlycount; 
 
     public Cell(int value,int row, int column, Solver solver) {
         this.value = value;
@@ -449,6 +449,9 @@ public class Cell {
     }
 
     public boolean TryRandomlySolve() {
+        if(solver.isAllLookedForRandomSolution()){
+            return false;
+        }
         ArrayList<Integer> possibleValuesCopy = new ArrayList<>(this.possibleValues);
         Cell tempCell = this.Copy();
         
@@ -461,7 +464,6 @@ public class Cell {
                 solver.setGrid(temp);
                 solver.getGrid()[row][column].possibleValues.remove((Integer) value);
                 solver.getGrid()[row][column].isThatTryRandomly= true;
-                
             }
             
         }

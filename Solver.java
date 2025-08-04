@@ -3,25 +3,21 @@
 public class Solver
 {
 
-    public Cell[][] grid;
+    private Cell[][] grid;
     
-    public void setCell(int row, int column,Cell cell) {
-        grid[row][column]= cell;
-    }
-
-    public void setGrid(Cell[][] grid) {
-        this.grid = grid;
-    }
-
     public Cell[][] getGrid() {
         return grid;
     }
-
+    public void setGrid(Cell[][] grid) {
+        this.grid = grid;
+    }
     public Cell getCell(int row, int column) {
         return grid[row][column];
         
     }
-
+    public void setCell(int row, int column,Cell cell) {
+        grid[row][column]= cell;
+    }
     public Cell[][] CopyGrid() {
         Cell[][] newGrid = new Cell[grid.length][];
         for (int i = 0; i < grid.length; i++) {
@@ -33,7 +29,6 @@ public class Solver
         }
         return newGrid;
     }
-
     public void printGrid() {
         for (Cell[] grid1 : grid) {
             for (Cell item : grid1) {
@@ -45,9 +40,8 @@ public class Solver
         for (Cell[] grid1 : grid) {
             for (Cell item : grid1) {
                 if (item.isEmpty()) {
-                    //item.printPossibleValues();
-                    //System.out.println();
-                
+                    item.printPossibleValues();
+                    System.out.println();
                 } else {
                     solvedCount++;
                 }
@@ -57,98 +51,28 @@ public class Solver
         System.out.println();
         
     }
-
     public boolean isSolved() {
         for (Cell[] grid1 : grid) {
             for (Cell item : grid1) {
                 if (item.isEmpty()) {
-                    return false; // If any cell is empty, the Sudoku is not solved
+                    return false; 
                 }
             }
         }
-        return true; // All cells are filled
+        return true;
     }
-
-    public boolean  SolveWithVer() {
+    public boolean  isAllLookedForRandomSolution() {
         
-        boolean isProgress = false;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty()) {
-                    if(grid[i][j].IsItVerticallyPlacedIn3x3Box()){
-                        isProgress = true || isProgress; // Return true immediately if a cell is solved
-                    }
-                    
+        for( int i = 0; i<9;i++){
+            for ( int j=0;j<9;j++){
+                if(!grid[i][j].isThatTryRandomly&& grid[i][j].isEmpty){
+                    return false;
                 }
             }
         }
-        if (isProgress) {
-            //System.out.println("zorttttttttttttttt");
-            Solve(0);
-        }
-        //System.out.println("Progress made with vertical: " + isProgress);
-
-        return isProgress; // Return true if any cell was solved
-        
-    }       
-
-    public boolean  SolveWithHor() {
-        
-        boolean isProgress = false;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty()) {
-                    if(grid[i][j].IsItHorizontallyPlacedIn3x3Box()){
-                        isProgress = true || isProgress; // Return true immediately if a cell is solved
-                    }
-                    
-                }
-            }
-        }
-        if (isProgress) {
-            //System.out.println("aaaaaaaaaaaaah");
-            Solve(0);
-        }
-        //System.out.println("Progress made with  horizontal: " + isProgress);
-
-        return isProgress; // Return true if any cell was solved
-        
-    }       
-
-    public boolean  SolveWithIsThatOnlyOne() {
-        boolean isProgress = false;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty()) {
-                    //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
-                    isProgress = isProgress || grid[i][j].isThatOnlyOne();
-                    // Debug print removed for production use
-                }
-            }
-        }
-        if (isProgress) {
-            Solve(0);
-        }
-        return isProgress;
+        return true;
     }
-
-    public boolean  SolveWithCalculatePossibleValues() {
-        boolean isProgress = false;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].isEmpty()) {
-                    //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
-                    isProgress = isProgress || grid[i][j].calculatePossibleValues();
-                    // Debug print removed for production use
-                }
-            }
-        }
-        if (isProgress) {
-            Solve(0);
-        }
-        return isProgress;
-    }
-
+    
     public boolean  Solve(){
         boolean isSolved = Solve(0);
 
@@ -162,47 +86,22 @@ public class Solver
 
             return true;
         }
-
-        
         boolean progress = false;
        
         if(iterate<20){
             progress = SolveWithCalculatePossibleValues()||progress ;
             progress = SolveWithIsThatOnlyOne()||progress ;
-            progress = SolveWithVer()||progress ;
-            progress = SolveWithHor()||progress ;
+            progress = SolveWithVertically()||progress ;
+            progress = SolveWithHorizaontally()||progress ;
+            
             Cell[][] celltemp = CopyGrid();
+            
             try {    
-                progress = SolveWithRandomly()|| progress ;
+                progress =SolveWithRandomly() || progress ;
             } catch (StackOverflowError e) {
                 grid = celltemp;
             }
-
-
-        
         }
-
-        //if (iterate<= 3){
-        //    progress = progress || SolveWithCalculatePossibleValues();
-//
-        //}else if (iterate > 3 && iterate < 5) {
-        //    //System.out.println(iterate + " iterations without progress, trying to solve with isThatOnlyOne.");
-        //    progress = progress ||  SolveWithIsThatOnlyOne();
-//
-        //} else if (iterate >5 && iterate < 10) {
-        //    //System.out.println(iterate + " iterations without progress, trying to solve with vertically");
-        //    progress = progress ||  SolveWithVer();
-//
-        //}else if (iterate>10&&iterate< 15) {
-        //    //System.out.println(iterate + " trying horizantally");
-        //    progress = progress ||  SolveWithHor();
-        //} else if (iterate > 15 && iterate<20) {
-        //    //System.out.println("iterate: " + iterate);
-        //    //progress = progress ||  SolveWithRandomly();
-        //}else if (iterate>20) {
-        //    return false;
-        //    
-        //}
 
         if (progress){
             return Solve(0);
@@ -212,16 +111,75 @@ public class Solver
         
     }
 
-    public boolean  isAllLookedForRandomSolution() {
+    public boolean  SolveWithVertically() {
         
-        for( int i = 0; i<9;i++){
-            for ( int j=0;j<9;j++){
-                if(!grid[i][j].isThatTryRandomly&& grid[i][j].isEmpty){
-                    return false;
+        boolean isProgress = false;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()) {
+                    isProgress = grid[i][j].IsItVerticallyPlacedIn3x3Box() || isProgress; 
                 }
             }
         }
-        return true;
+
+        if (isProgress) {
+            Solve(0);
+        }
+
+        return isProgress; 
+    }       
+
+    public boolean  SolveWithHorizaontally() {
+        
+        boolean isProgress = false;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()) {
+                    isProgress = grid[i][j].IsItHorizontallyPlacedIn3x3Box() || isProgress;
+                }
+            }
+        }
+
+        if (isProgress) {
+    
+            Solve(0);
+        }
+
+        return isProgress;
+    }       
+
+    public boolean  SolveWithIsThatOnlyOne() {
+        boolean isProgress = false;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()) {
+                    isProgress = isProgress || grid[i][j].isThatOnlyOne();
+                }
+            }
+        }
+
+        if (isProgress) {
+            Solve(0);
+        }
+        
+        return isProgress;
+    }
+
+    public boolean  SolveWithCalculatePossibleValues() {
+        boolean isProgress = false;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j].isEmpty()) {
+                    isProgress = isProgress || grid[i][j].calculatePossibleValues();
+                }
+            }
+        }
+
+        if (isProgress) {
+            Solve(0);
+        }
+        
+        return isProgress;
     }
 
     public boolean SolveWithRandomly() {
@@ -229,27 +187,21 @@ public class Solver
         if ( isAllLookedForRandomSolution()){
             return false; 
         }
+
         boolean isProgress = false;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j].isEmpty()&&!grid[i][j].isThatTryRandomly &&grid[i][j].triedrandomlycount<5) {
-                    //System.out.println("" + i + " " + j + " is empty, trying to solve with isThatOnlyOne.");
                     Cell[][] tempGrid = CopyGrid();
+                    
                     try {
                         isProgress = isProgress || grid[i][j].TryRandomlySolve();
-                        
                     } catch (StackOverflowError e) {
                         isProgress = isProgress||false;
                         grid = tempGrid;
                         grid[i][j].isThatTryRandomly = true;
                         grid[i][j].triedrandomlycount++;
-                        //System.out.println("there is no solution for this iteration");
-                        
-                        
                     }
-                    
-                    // Debug print removed for production use
-                    
                 }
             }
         }
